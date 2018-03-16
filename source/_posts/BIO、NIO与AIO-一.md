@@ -410,11 +410,11 @@ class Attachment {
     public Path  path;
     public ByteBuffer buffer;
     public AsynchronousFileChannel asyncChannel;
-    public int count = 0;
+    public int count = 2000;
 
-    public void close(){
+    public synchronized void close(){
         System.out.println(count);
-        if(++ count >= 2000) {
+        if(count -- <= 0) {
             try {
                 this.asyncChannel.close();
             } catch (IOException e) {
