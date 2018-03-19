@@ -531,7 +531,7 @@ Java_sun_nio_ch_WindowsAsynchronousFileChannelImpl_writeFile(JNIEnv* env, jclass
 * 减少`IO`发生的次数可以提高文件读写的效率。具体操作是一次读取/写入多个字节。
 * 在相同缓存大小的情况下`read(byte[])`比`BufferedInputStream`效率要高，虽然从源码上看二者产不多，但实际上`read(byte[])`要快很多，具体原因可能与`synchronized`关键字有关。
 * `NIO`的文件读写效率比`read(byte[])`差不多，二者都是调用底层的`write`函数，但`NIO`提供了比较方便的API。
-* `AIO`并没有加速`IO`处理速度，只是利用回调和通知机制改变了业务处理时机，使得具体逻辑可以不关注`IO`结果，只需在合理的时机添加回调即可。但是从上面的例子可以看出，多线程的文件读写并没有比同步的读写快，那是**因为`AsynchronousFileChannel`在对文件进行写时锁住了文件通道，可以这么理解，通道只有一个，每次只允许一个`IO`操作,所以多线程在对一个文件读写时是无效的**，如果写多个文件，多线程要快的多，比如写2000个文件。`windows`系统的异步`IO`是通过`IOCP`完成的。
+* `AIO`并没有加速`IO`处理速度，只是利用回调和通知机制改变了业务处理时机，使得具体逻辑可以不关注`IO`结果，只需在合理的时机添加回调即可。但是多线程的文件读写并没有比同步的读写快，原因不清楚。`windows`系统的异步`IO`是通过`IOCP`完成的。
 
 # 问题
 * `read(byte[])`比`BufferedInputStream`效率高具体是什么原因导致的。
